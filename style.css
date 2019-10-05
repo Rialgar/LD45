@@ -42,27 +42,49 @@ body {
     background-repeat: no-repeat;
 }
 
-#characters div#player {
+#characters div.player {
     background-image: url("Player.png");
     background-size: 500%;
     transition-property: top, left;
     transition-duration: .1s;
 }
 
-#characters div#player.right {
+#characters div.player.right {
     --tile-x: 1;
 }
 
-#characters div#player.left {
+#characters div.player.left {
     --tile-x: 2;
 }
 
-#characters div#player.down {
+#characters div.player.down {
     --tile-x: 3;
 }
 
-#characters div#player.up {
+#characters div.player.up {
     --tile-x: 4;
+}
+
+#characters div.item {
+    background-image: url("Items.png");
+    background-size: 800%;
+    --tile-y: 1;
+}
+
+#characters div.item.heart {
+    --tile-x: 4;
+}
+
+#characters div.item.sword {
+    --tile-x: 5;
+}
+
+#characters div.item.shield {
+    --tile-x: 6;
+}
+
+#characters div.item.coin {
+    --tile-x: 7;
 }
 
 #table {

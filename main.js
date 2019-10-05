@@ -1,11 +1,12 @@
 import * as Level from './level.js'
+import { Character } from './character.js';
 
 const width = 7;
 const height = 7;
 
 const cells = [];
 
-const player = {};
+let player;
 
 const getCell = (x, y) => cells && cells[x] && cells[x][y];
 const setCell = (x, y, cell) => {
@@ -28,22 +29,12 @@ const setData = (x, y, data) => {
 }
 
 const playerStates = [
-    'standing',
+    'default',
     'left',
     'right',
     'up',
     'down'
 ]
-
-const setPlayer = (x, y, state = 'standing') => {
-    player.x = x;
-    player.y = y;
-    player.state = state;
-    player.dom.style.setProperty('--pos-x', x);
-    player.dom.style.setProperty('--pos-y', y);    
-    playerStates.forEach(st => player.dom.classList.remove(st));
-    player.dom.classList.add(state);
-}
 
 const directionKeys = {
     up: ['w', 'arrowup'],
@@ -52,36 +43,69 @@ const directionKeys = {
     right: ['d', 'arrowright'],
 }
 
-const setPlayerState = state => {
+const setPlayerState = (state) => {    
     if(!state){
         if(directionKeys[player.state] && directionKeys[player.state].find(key => isDown[key])){
             return;
         }
         state = playerStates.find(candidate => directionKeys[candidate] && directionKeys[candidate].find(key => isDown[key]));
     }
-    setPlayer(player.x, player.y, state);
+    player.setState(state);
+}
+
+const playerAnimations = {
+    headShake: [
+        {state: 'left', duration: 100},
+        {state: 'standing', duration: 100},
+        {state: 'right', duration: 100},
+        {state: 'standing', duration: 100},
+        {state: 'left', duration: 100},
+        {state: 'standing', duration: 100}
+    ],
+    nod: [
+        {state: 'up', duration: 100},
+        {state: 'standing', duration: 100},
+        {state: 'down', duration: 100},
+        {state: 'standing', duration: 100},
+        {state: 'up', duration: 100},
+        {state: 'standing', duration: 100},
+        {state: 'down', duration: 100},
+        {state: 'standing', duration: 100}
+    ]
 }
 
 const movePlayer = () => {
+    if(player.animating){
+        return;
+    }
+
     switch (player.state) {
         case 'up':
             if(getCell(player.x, player.y).data.connections.north){
-                setPlayer(player.x, player.y - 1, 'up');
+                player.set(player.x, player.y - 1, 'up');
+            } else {
+                player.startAnimation('headShake');
             }
             break;
         case 'down':
             if(getCell(player.x, player.y).data.connections.south){
-                setPlayer(player.x, player.y + 1, 'down');
+                player.set(player.x, player.y + 1, 'down');
+            } else {
+                player.startAnimation('headShake');
             }
             break;
         case 'left':
             if(getCell(player.x, player.y).data.connections.west){
-                setPlayer(player.x - 1, player.y, 'left');
+                player.set(player.x - 1, player.y, 'left');
+            } else {
+                player.startAnimation('headShake');
             }
             break;
         case 'right':
             if(getCell(player.x, player.y).data.connections.east){
-                setPlayer(player.x + 1, player.y, 'right');
+                player.set(player.x + 1, player.y, 'right');
+            } else {
+                player.startAnimation('headShake');
             }
             break;
         default:
@@ -90,15 +114,15 @@ const movePlayer = () => {
 
 const bindings = {
     down: {
-        'w' : setPlayerState.bind(window, 'up'),
-        'arrowup' : setPlayerState.bind(window, 'up'),
-        'a' : setPlayerState.bind(window, 'left'),
-        'arrowleft' : setPlayerState.bind(window, 'left'),
-        's' : setPlayerState.bind(window, 'down'),
-        'arrowdown' : setPlayerState.bind(window, 'down'),
-        'd' : setPlayerState.bind(window, 'right'),
-        'arrowright' : setPlayerState.bind(window, 'right'),
-        ' ' : movePlayer
+        'w' : () => setPlayerState('up'),
+        'arrowup' : () => setPlayerState('up'),
+        'a' : () => setPlayerState('left'),
+        'arrowleft' : () => setPlayerState('left'),
+        's' : () => setPlayerState('down'),
+        'arrowdown' : () => setPlayerState('down'),
+        'd' : () => setPlayerState('right'),
+        'arrowright' : () => setPlayerState('right'),
+        ' ' : movePlayer,
     },
     up: {
         'w' : setPlayerState,
@@ -119,7 +143,6 @@ const onkeydown = (ev) => {
         return;
     }
 
-    console.log('down', key);
     isDown[key] = true;
     if(bindings.down[key]){
         bindings.down[key]();
@@ -132,7 +155,6 @@ const onkeyup = (ev) => {
         return;
     }
 
-    console.log('up', key);
     isDown[key] = false;
     if(bindings.up[key]){
         bindings.up[key]();
@@ -157,26 +179,37 @@ const init = () => {
     }
 
     const charactersDiv = document.getElementById('characters');
-    const playerDiv = document.createElement('div');
-    playerDiv.classList.add('character');
-    playerDiv.id = 'player';
-    charactersDiv.appendChild(playerDiv);
-    player.dom = playerDiv;
-    setPlayer(3, 3);
+    player = new Character(3, 3, playerAnimations, charactersDiv, 'player');
+    player.addAnimCompleteHandler(setPlayerState);
 
     document.addEventListener('keydown', onkeydown);
     document.addEventListener('keyup', onkeyup);
 }
 
-const onload = () => {
-    init();
+const makeLevel = () => {
+    const charactersDiv = document.getElementById('characters');
 
     const level = Level.generate(width, height);
     for(let x = 0; x < level.length; x++){
         for(let y = 0; y < level[x].length; y++){
-            setData(x, y, level[x][y]);
+            const data = level[x][y];
+            if(data.special){
+                const special = data.special;
+                delete data.special;
+                if(special.item){
+                    data.item = new Character(x, y, [], charactersDiv, 'item', special.item);
+                }
+            }
+            setData(x, y, data);
         }
     }
+
+    player.set(level.startRoom.x, level.startRoom.y);
+}
+
+const onload = () => {
+    init();    
+    makeLevel();
 }
 
 if (document.readyState === 'complete') {

@@ -90,6 +90,20 @@ export const generate = (width, height) => {
         fuseGroups(group, otherGroup);
         groups.splice(groups.indexOf(otherGroup), 1);
     }
+    
+    const specials = shuffle(['coin', 'coin', 'coin', 'coin', 'heart', 'sword', 'shield']).map(item => ({item}));
+    specials.push('start');
+
+    while(specials.length){
+        let room = randomElement(randomElement(rooms));
+        while(room.special){
+            room = randomElement(randomElement(rooms));
+        }
+        room.special = specials.pop();
+        if(room.special === 'start'){
+            rooms.startRoom = room;
+        }
+    }
 
     return rooms;
 }
