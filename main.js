@@ -8,6 +8,9 @@ const cells = [];
 
 let player;
 
+const items = {};
+const hud = {};
+
 const getCell = (x, y) => cells && cells[x] && cells[x][y];
 const setCell = (x, y, cell) => {
     if (!cells[x]) {
@@ -112,6 +115,17 @@ const movePlayer = () => {
     }
 }
 
+const afterPlayerMove = () => {    
+    const cellData = getCell(player.x, player.y).data;
+    console.log('afterPlayerMove', cellData);
+    if(items.coins < 7 && cellData.item && cellData.item.state === 'coin'){
+        cellData.item.destroy();
+        delete cellData.item;
+        hud.coins[items.coins].dom.classList.remove('empty');
+        items.coins++;
+    }
+}
+
 const bindings = {
     down: {
         'w' : () => setPlayerState('up'),
@@ -181,6 +195,26 @@ const init = () => {
     const charactersDiv = document.getElementById('characters');
     player = new Character(3, 3, playerAnimations, charactersDiv, 'player');
     player.addAnimCompleteHandler(setPlayerState);
+    player.dom.addEventListener('transitionend', afterPlayerMove);
+
+    const itemTypes = ['heart', 'coin', 'sword', 'shield'];
+    itemTypes.forEach(type => {
+        const plural = type + 's';
+        items[plural] = 0;
+        const container = document.getElementById(plural);
+        hud[plural] = [];        
+        for(let i = 0; i < 7; i ++){
+            const dom = document.createElement('div');
+            dom.classList.add('hudItem');
+            dom.classList.add(type);
+            dom.classList.add('empty');
+            container.appendChild(dom);
+            hud[plural].push({
+                dom,
+                empty: true,
+            });
+        }
+    })
 
     document.addEventListener('keydown', onkeydown);
     document.addEventListener('keyup', onkeyup);

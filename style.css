@@ -43,6 +43,7 @@ body {
 }
 
 #characters div.player {
+    z-index: 1;
     background-image: url("Player.png");
     background-size: 500%;
     transition-property: top, left;
@@ -87,7 +88,75 @@ body {
     --tile-x: 7;
 }
 
+#hud {
+    position: absolute;
+    top: 0;
+    left: calc(var(--tile-size) * 7);
+    width: calc(var(--char-size) * 7);
+    height: calc(var(--tile-size) * 7);
+}
+
+#hud div.hudItem {
+    display: inline-block;
+    width: var(--char-size);
+    height: var(--char-size);
+
+    background-image: url("Items.png");
+    background-size: 800%;
+
+    --tile-x: 0;
+    --tile-y: 0;
+    background-position: calc(var(--tile-x) * var(--n-char-size)) calc(var(--tile-y) * var(--n-char-size));
+    background-repeat: no-repeat;
+}
+
+#hud div.hudItem.heart {
+    --tile-x: 1;
+    --tile-y: 0;
+}
+
+#hud div.hudItem.heart.empty {
+    --tile-x: 0;
+    --tile-y: 0;
+}
+
+#hud div.hudItem.coin {
+    --tile-x: 3;
+    --tile-y: 0;
+}
+
+#hud div.hudItem.coin.empty {
+    --tile-x: 2;
+    --tile-y: 0;
+}
+
+#hud div.hudItem.sword {
+    --tile-x: 5;
+    --tile-y: 0;
+}
+
+#hud div.hudItem.sword.empty {
+    --tile-x: 4;
+    --tile-y: 0;
+}
+
+#hud div.hudItem.shield {
+    --tile-x: 7;
+    --tile-y: 0;
+}
+
+#hud div.hudItem.shield.empty {
+    --tile-x: 6;
+    --tile-y: 0;
+}
+
 #table {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(var(--tile-size) * 7);
+    height: calc(var(--tile-size) * 7);
+
     border-spacing: 0;
     border-collapse: collapse;
 }

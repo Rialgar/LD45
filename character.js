@@ -12,6 +12,11 @@ export class Character {
         this.set(x, y, state);
     }
 
+    destroy(){
+        this.stopAnimation();
+        this.dom.parentElement.removeChild(this.dom);
+    }
+
     set(x, y, state = 'default'){
         this.x = x;
         this.y = y;
@@ -37,7 +42,7 @@ export class Character {
         const frame = this.animQueue.shift();
         if(frame){
             this.setState(frame.state, true);
-            window.setTimeout(() => this.nextFrame(), frame.duration);
+            this.animTimeout = window.setTimeout(() => this.nextFrame(), frame.duration);
         } else {
             this.stopAnimation();
         }
@@ -50,6 +55,10 @@ export class Character {
     }
 
     stopAnimation(){
+        if(this.animTimeout){
+            window.clearTimeout(this.animTimeout);
+            this.animTimeout = false;
+        }
         this.animating = false;
         this.setState('default');
         this.animCompleteHandler && this.animCompleteHandler();
