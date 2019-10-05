@@ -117,12 +117,25 @@ const movePlayer = () => {
 
 const afterPlayerMove = () => {    
     const cellData = getCell(player.x, player.y).data;
-    console.log('afterPlayerMove', cellData);
     if(items.coins < 7 && cellData.item && cellData.item.state === 'coin'){
         cellData.item.destroy();
         delete cellData.item;
         hud.coins[items.coins].dom.classList.remove('empty');
         items.coins++;
+    }
+}
+
+const buyItem = () => {
+    const cellData = getCell(player.x, player.y).data;
+    if(cellData.item && cellData.item.state !== 'coin' && items.coins > 0){
+        const type = cellData.item.state;
+        const plural = type + 's';
+        if(items[plural] < 7){
+            items.coins--;
+            hud.coins[items.coins].dom.classList.add('empty');
+            hud[plural][items[plural]].dom.classList.remove('empty');
+            items[plural]++;
+        }
     }
 }
 
@@ -137,6 +150,7 @@ const bindings = {
         'd' : () => setPlayerState('right'),
         'arrowright' : () => setPlayerState('right'),
         ' ' : movePlayer,
+        'b': buyItem
     },
     up: {
         'w' : setPlayerState,
