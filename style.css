@@ -5,24 +5,76 @@ html, body {
 
 html {
     background-color: black;
+    image-rendering: pixelated;
 }
 
 body {
     --tile-size: 96px;
     --n-tile-size: calc(-1 * var(--tile-size));
+    --char-size: calc(var(--tile-size) / 2);
+    --n-char-size: calc(-1 * var(--char-size));
 }
 
-table {
+#game {
+    position: relative;
+}
+
+#characters {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(var(--tile-size) * 7);
+    height: calc(var(--tile-size) * 7);
+}
+
+#characters div.character {
+    --pos-x: 0;
+    --pos-y: 0;
+    position: absolute;
+    width: var(--char-size);
+    height: var(--char-size);
+    top: calc(( var(--pos-y) + 0.25 ) * var(--tile-size));
+    left: calc(( var(--pos-x) + 0.25 ) * var(--tile-size));
+
+    --tile-x: 0;
+    --tile-y: 0;
+    background-position: calc(var(--tile-x) * var(--n-char-size)) calc(var(--tile-y) * var(--n-char-size));
+    background-repeat: no-repeat;
+}
+
+#characters div#player {
+    background-image: url("Player.png");
+    background-size: 500%;
+    transition-property: top, left;
+    transition-duration: .1s;
+}
+
+#characters div#player.right {
+    --tile-x: 1;
+}
+
+#characters div#player.left {
+    --tile-x: 2;
+}
+
+#characters div#player.down {
+    --tile-x: 3;
+}
+
+#characters div#player.up {
+    --tile-x: 4;
+}
+
+#table {
     border-spacing: 0;
     border-collapse: collapse;
 }
 
-td {
+#table td {
     background-color: black;
     background-image: url("Background.png");
     background-repeat: no-repeat;
     background-size: 400%;
-    image-rendering: pixelated;
     width: var(--tile-size);
     height: var(--tile-size);
     margin: 0;
@@ -32,77 +84,77 @@ td {
     background-position: calc(var(--tile-x) * var(--n-tile-size)) calc(var(--tile-y) * var(--n-tile-size));
 }
 
-td.w {
+#table td.w {
     --tile-x: 1;
     --tile-y: 0;
 }
 
-td.n {
+#table td.n {
     --tile-x: 2;
     --tile-y: 0;
 }
 
-td.e {
+#table td.e {
     --tile-x: 3;
     --tile-y: 0;
 }
 
-td.s {
+#table td.s {
     --tile-x: 0;
     --tile-y: 1;
 }
 
-td.e.w {
+#table td.e.w {
     --tile-x: 1;
     --tile-y: 1;
 }
 
-td.n.s {
+#table td.n.s {
     --tile-x: 2;
     --tile-y: 1;
 }
 
-td.w.s {
+#table td.w.s {
     --tile-x: 3;
     --tile-y: 1;
 }
 
-td.w.n {
+#table td.w.n {
     --tile-x: 0;
     --tile-y: 2;
 }
 
-td.e.n {
+#table td.e.n {
     --tile-x: 1;
     --tile-y: 2;
 }
 
-td.e.s {
+#table td.e.s {
     --tile-x: 2;
     --tile-y: 2;
 }
 
-td.w.n.s {
+#table td.w.n.s {
     --tile-x: 3;
     --tile-y: 2;
 }
 
-td.e.w.n {
+#table td.e.w.n {
     --tile-x: 0;
     --tile-y: 3;
 }
 
-td.e.n.s {
+#table td.e.n.s {
     --tile-x: 1;
     --tile-y: 3;
 }
 
-td.e.w.s {
+#table td.e.w.s {
     --tile-x: 2;
     --tile-y: 3;
 }
 
-td.e.w.n.s {
+#table td.e.w.n.s {
     --tile-x: 3;
     --tile-y: 3;
 }
