@@ -72,3 +72,47 @@ body {
     border-spacing: 0;
     border-collapse: collapse;
 }
+
+#modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(( var(--tile-size) + var(--char-size) ) * 7);
+    height: calc(var(--tile-size) * 7);
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 2;
+    display: none;
+}
+
+#modalBody {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: calc(var(--tile-size) / 32) solid white;
+    border-radius: calc(var(--tile-size) / 16);
+    padding: calc(var(--tile-size) / 4);
+    background-color: black;
+    color: white;
+    font-family: "04B03";
+    font-size: 32px;    
+}
+
+#modalBody #modalButton {
+    display: block;
+    margin: auto;
+    margin-top: calc(var(--tile-size) / 4);
+    border: 1px solid white;
+    background-color: black;
+    padding: calc(var(--tile-size) / 16) calc(var(--tile-size) / 8);
+    border-radius: calc(var(--tile-size) / 32);
+    color: white;
+    font-family: "04B03";
+    font-size: inherit;
+    cursor: pointer;    
+}
+
+#modalBody #modalButton:hover {
+    background-color: white;
+    color: black;
+}

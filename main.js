@@ -1,6 +1,7 @@
 import * as Level from './level.js'
 import { Character } from './character.js';
 import { monsterAnims, monsterStats } from './monsters.js';
+import modal from './modal.js';
 
 const width = 7;
 const height = 7;
@@ -141,7 +142,7 @@ const afterPlayerMove = () => {
                 delete cellData.monster;
                 killedMonsters++;
                 if(killedMonsters === 3){
-                    alert("You won!");
+                    modal.show("You won :D", "Yay!");
                 }
             })
         } else {
@@ -152,8 +153,7 @@ const afterPlayerMove = () => {
                 damage--;
             }
             if(damage > 0){
-                alert("You lost!");
-                window.location.reload();
+                modal.show("You lost :(", "Restart").then(() => reset());
             }
         }
         player.set(player.source.x, player.source.y, player.state);
@@ -202,7 +202,9 @@ const bindings = {
         'arrowright' : () => setPlayerState('right'),
         ' ' : movePlayer,
         'b': buyItem,
-        'c': checkRoom
+        'c': checkRoom,
+        'enter': () => modal.dismiss(),
+        'escape': () => modal.dismiss()
     },
     up: {
         'w' : setPlayerState,
@@ -247,6 +249,7 @@ const onkeyup = (ev) => {
     }
 }
 
+const itemTypes = ['heart', 'coin', 'sword', 'shield'];
 const init = () => {
     const table = document.getElementById('table');    
     for(let y = 0; y < height; y++){    
@@ -273,7 +276,6 @@ const init = () => {
     });
     player.dom.addEventListener('transitionend', afterPlayerMove);
 
-    const itemTypes = ['heart', 'coin', 'sword', 'shield'];
     itemTypes.forEach(type => {
         const plural = type + 's';
         items[plural] = 0;
@@ -286,14 +288,38 @@ const init = () => {
             dom.classList.add('empty');
             container.appendChild(dom);
             hud[plural].push({
-                dom,
-                empty: true,
+                dom
             });
         }
     })
 
     document.addEventListener('keydown', onkeydown);
     document.addEventListener('keyup', onkeyup);
+
+    modal.init();
+}
+
+const reset = () => {
+    itemTypes.forEach(type => {
+        const plural = type + 's';
+        for(let i = 0; i < 7; i ++){
+            hud[plural][i].dom.classList.add('empty');
+        }
+        items[plural] = 0;
+    });
+    for(let y = 0; y < height; y++){    
+        for(let x = 0; x < width; x++){
+            const cell = getCell(x, y);
+            if(cell.data.item){
+                cell.data.item.destroy();
+            }
+            if(cell.data.monster){
+                cell.data.monster.destroy();
+            }
+            delete cell.data;
+        }
+    }
+    makeLevel();
 }
 
 const makeLevel = () => {
