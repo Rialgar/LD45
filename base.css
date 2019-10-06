@@ -6,6 +6,8 @@
 html, body {
     margin: 0;
     padding: 0;
+    width: 100%;
+    height: 100%;
 }
 
 html {
@@ -21,7 +23,12 @@ body {
 }
 
 #game {
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(( var(--tile-size) + var(--char-size) ) * 7);
+    height: calc(var(--tile-size) * 7);
+    transform: translate(-50%, -50%);
 }
 
 #characters {

@@ -29,7 +29,7 @@ export const monsterStats = {
         def: 0
     },
     king: {
-        hp: 4,
+        hp: 6,
         att: 4,
         def: 1
     }

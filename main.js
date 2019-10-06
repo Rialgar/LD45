@@ -293,8 +293,8 @@ const init = () => {
         }
     })
 
-    document.addEventListener('keydown', onkeydown);
-    document.addEventListener('keyup', onkeyup);
+    window.addEventListener('keydown', onkeydown);
+    window.addEventListener('keyup', onkeyup);
 
     modal.init();
 }
