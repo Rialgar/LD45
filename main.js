@@ -78,47 +78,46 @@ const playerAnimations = {
     ]
 }
 
-const movePlayer = () => {
-    if(player.animating){
-        return;
-    }
-
+const getTargetCell = function(){
     const source = getCell(player.x, player.y);
-    let target = null;    
     switch (player.state) {
         case 'up':
             if(source.data.connections.north){
-                target = getCell(player.x, player.y - 1);
-            } else {
-                player.startAnimation('headShake');
+                return getCell(player.x, player.y - 1);
             }
             break;
         case 'down':
             if(source.data.connections.south){
-                target = getCell(player.x, player.y + 1);
-            } else {
-                player.startAnimation('headShake');
+                return getCell(player.x, player.y + 1);
             }
             break;
         case 'left':
             if(source.data.connections.west){
-                target = getCell(player.x - 1, player.y);
-            } else {
-                player.startAnimation('headShake');
+                return getCell(player.x - 1, player.y);
             }
             break;
         case 'right':
             if(source.data.connections.east){
-                target = getCell(player.x + 1, player.y);
-            } else {
-                player.startAnimation('headShake');
+                return getCell(player.x + 1, player.y);
             }
             break;
         default:
     }
+    return null;
+}
+
+const movePlayer = () => {
+    if(player.animating || player.state === 'default'){
+        return;
+    }    
+    const source = getCell(player.x, player.y);
+    const target = getTargetCell();    
+
     if(target){
         player.set(target.x, target.y, player.state);
         player.source = source;
+    } else {
+        player.startAnimation('headShake')
     }
 }
 
@@ -159,6 +158,18 @@ const afterPlayerMove = () => {
     }
 }
 
+const checkRoom = () =>{    
+    const target = getTargetCell();
+    console.log('check room', target.data.monster.stats);
+    if (!target) {
+        player.startAnimation('headShake');
+    } else if (!target.data.monster || target.data.monster.stats.hp + target.data.monster.stats.def <= items.swords || target.data.monster.stats.att <= items.shields){
+        player.startAnimation('nod');
+    } else {
+        player.startAnimation('headShake');
+    }
+}
+
 const buyItem = () => {
     const cellData = getCell(player.x, player.y).data;
     if(cellData.item && cellData.item.state !== 'coin' && items.coins > 0){
@@ -184,7 +195,8 @@ const bindings = {
         'd' : () => setPlayerState('right'),
         'arrowright' : () => setPlayerState('right'),
         ' ' : movePlayer,
-        'b': buyItem
+        'b': buyItem,
+        'c': checkRoom
     },
     up: {
         'w' : setPlayerState,

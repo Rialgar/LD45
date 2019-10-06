@@ -72,6 +72,7 @@ export class Character {
             this.animTimeout = false;
         }
         this.animating = false;
+        this.currentAnimation = '';
         this.setState('default');
         this.animCompleteHandler && this.animCompleteHandler();
         this.animQueue = [];
