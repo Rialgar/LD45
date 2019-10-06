@@ -13,6 +13,26 @@
     --tile-y: 0;
 }
 
+#characters div.monster.slime.death1 {
+    --tile-x: 2;
+    --tile-y: 0;
+}
+
+#characters div.monster.slime.death2 {
+    --tile-x: 3;
+    --tile-y: 0;
+}
+
+#characters div.monster.slime.death3 {
+    --tile-x: 4;
+    --tile-y: 0;
+}
+
+#characters div.monster.slime.death4 {
+    --tile-x: 5;
+    --tile-y: 0;
+}
+
 #characters div.monster.knight.default {
     --tile-x: 6;
     --tile-y: 0;
@@ -23,6 +43,26 @@
     --tile-y: 0;
 }
 
+#characters div.monster.knight.death1 {
+    --tile-x: 0;
+    --tile-y: 1;
+}
+
+#characters div.monster.knight.death2 {
+    --tile-x: 1;
+    --tile-y: 1;
+}
+
+#characters div.monster.knight.death3 {
+    --tile-x: 2;
+    --tile-y: 1;
+}
+
+#characters div.monster.knight.death4 {
+    --tile-x: 3;
+    --tile-y: 1;
+}
+
 #characters div.monster.king.default {
     --tile-x: 4;
     --tile-y: 1;
@@ -31,4 +71,59 @@
 #characters div.monster.king.bounce {
     --tile-x: 5;
     --tile-y: 1;
+}
+
+#characters div.monster.king.death1 {
+    --tile-x: 6;
+    --tile-y: 1;
+}
+
+#characters div.monster.king.death2 {
+    --tile-x: 7;
+    --tile-y: 1;
+}
+
+#characters div.monster.king.death3 {
+    --tile-x: 0;
+    --tile-y: 2;
+}
+
+#characters div.monster.king.death4 {
+    --tile-x: 1;
+    --tile-y: 2;
+}
+
+#characters div.monster.king.death5 {
+    --tile-x: 2;
+    --tile-y: 2;
+}
+
+#characters div.monster.king.death6 {
+    --tile-x: 3;
+    --tile-y: 2;
+}
+
+#characters div.monster.king.death7 {
+    --tile-x: 4;
+    --tile-y: 2;
+}
+
+#characters div.monster.king.death8 {
+    --tile-x: 5;
+    --tile-y: 2;
+}
+
+#characters div.monster.king.death9 {
+    --tile-x: 6;
+    --tile-y: 2;
+}
+
+#characters div.monster.king.death10 {
+    --tile-x: 7;
+    --tile-y: 2;
+}
+
+#characters div.monster.king.death11 {
+    --tile-x: 0;
+    --tile-y: 3;
 }

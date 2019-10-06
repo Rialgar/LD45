@@ -16,7 +16,9 @@ export class Character {
     }
 
     destroy(){
-        this.stopAnimation();
+        if(this.animating){
+            this.stopAnimation();
+        }
         this.dom.parentElement.removeChild(this.dom);
     }
 
@@ -47,6 +49,7 @@ export class Character {
             this.setState(frame.state, true);
             this.animTimeout = window.setTimeout(() => this.nextFrame(), frame.duration);
         } else if(this.currentAnimation === 'idle') {
+            this.currentAnimation = '';
             this.startAnimation('idle');
         } else {
             this.stopAnimation();
@@ -54,6 +57,9 @@ export class Character {
     }
 
     startAnimation(name){
+        if(this.currentAnimation === name){
+            return;
+        }
         this.animating = true;
         this.currentAnimation = name;
         this.animQueue = [...this.animations[name] || []];

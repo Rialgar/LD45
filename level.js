@@ -179,9 +179,10 @@ export const generate = (width, height) => {
     const behindKnight = flatRooms.filter(room => room != knightRoom && beforeKnight.indexOf(room) < 0);
     const behindSlime = flatRooms.filter(room => room != slimeRoom && beforeSlime.indexOf(room) < 0);
     const betweenSlimeAndKnight = behindSlime.filter(room => beforeKnight.indexOf(room) >= 0);
+    const beforeAll = beforeSlime.filter(room => beforeKnight.indexOf(room) >= 0);
     
-    getFreeRoom(beforeSlime).special = shops.pop();    
-    getFreeRoom(beforeSlime).special = {...coin};
+    getFreeRoom(beforeAll).special = shops.pop();    
+    getFreeRoom(beforeAll).special = {...coin};
     coinsLeft--;
 
     const randomShops = shuffle(shops);

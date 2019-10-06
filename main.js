@@ -1,6 +1,6 @@
 import * as Level from './level.js'
 import { Character } from './character.js';
-import { monsterAnims } from './monsters.js';
+import { monsterAnims, monsterStats } from './monsters.js';
 
 const width = 7;
 const height = 7;
@@ -83,42 +83,75 @@ const movePlayer = () => {
         return;
     }
 
+    const source = getCell(player.x, player.y);
+    let target = null;    
     switch (player.state) {
         case 'up':
-            if(getCell(player.x, player.y).data.connections.north){
-                player.set(player.x, player.y - 1, 'up');
+            if(source.data.connections.north){
+                target = getCell(player.x, player.y - 1);
             } else {
                 player.startAnimation('headShake');
             }
             break;
         case 'down':
-            if(getCell(player.x, player.y).data.connections.south){
-                player.set(player.x, player.y + 1, 'down');
+            if(source.data.connections.south){
+                target = getCell(player.x, player.y + 1);
             } else {
                 player.startAnimation('headShake');
             }
             break;
         case 'left':
-            if(getCell(player.x, player.y).data.connections.west){
-                player.set(player.x - 1, player.y, 'left');
+            if(source.data.connections.west){
+                target = getCell(player.x - 1, player.y);
             } else {
                 player.startAnimation('headShake');
             }
             break;
         case 'right':
-            if(getCell(player.x, player.y).data.connections.east){
-                player.set(player.x + 1, player.y, 'right');
+            if(source.data.connections.east){
+                target = getCell(player.x + 1, player.y);
             } else {
                 player.startAnimation('headShake');
             }
             break;
         default:
     }
+    if(target){
+        player.set(target.x, target.y, player.state);
+        player.source = source;
+    }
 }
 
+let killedMonsters = 0;
 const afterPlayerMove = () => {    
     const cellData = getCell(player.x, player.y).data;
-    if(items.coins < 7 && cellData.item && cellData.item.state === 'coin'){
+    if(cellData.monster){
+        const monster = cellData.monster;
+        monster.stats.hp -= Math.max(0, items.swords - monster.stats.def);
+        if(monster.stats.hp <= 0){
+            monster.startAnimation('death');
+            monster.addAnimCompleteHandler(() => {
+                monster.destroy();
+                delete cellData.monster;
+                killedMonsters++;
+                if(killedMonsters === 3){
+                    alert("You won!");
+                }
+            })
+        } else {
+            let damage = monster.stats.att - items.shields;
+            while(damage > 0 && items.hearts > 0){
+                items.hearts--;
+                hud.hearts[items.hearts].dom.classList.add('empty');
+                damage--;
+            }
+            if(damage > 0){
+                alert("You lost!");
+                window.location.reload();
+            }
+        }
+        player.set(player.source.x, player.source.y, player.state);
+    }else if(items.coins < 7 && cellData.item && cellData.item.state === 'coin'){
         cellData.item.destroy();
         delete cellData.item;
         hud.coins[items.coins].dom.classList.remove('empty');
@@ -254,6 +287,7 @@ const makeLevel = () => {
                     data.item = new Character(x, y, {}, charactersDiv, ['item'], special.item);
                 } else if(special.monster){
                     data.monster = new Character(x, y, monsterAnims[special.monster], charactersDiv, ['monster', special.monster], 'deault');
+                    data.monster.stats = {...monsterStats[special.monster]};
                 }
             }
             setData(x, y, data);
