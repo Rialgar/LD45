@@ -21,3 +21,7 @@
 #characters div.player.up {
     --tile-x: 4;
 }
+
+#characters div.player.bounce {
+    --tile-y: 1;
+}

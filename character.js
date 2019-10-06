@@ -10,9 +10,6 @@ export class Character {
         domParent.appendChild(this.dom);
 
         this.set(x, y, state);
-        if(this.animations.idle){
-            this.startAnimation('idle');
-        }
     }
 
     destroy(){
@@ -34,17 +31,21 @@ export class Character {
         this.dom.classList.add('character');
         this.dom.classList.add(... this.classes);
         this.dom.classList.add(state);
+
+        if(state === 'default' && this.animations.idle){
+            this.startAnimation('idle');
+        };
     }
 
     setState(state, fromAnim = false){
-        if(this.animating && !fromAnim){
+        if(this.animating && this.currentAnimation !== 'idle' && !fromAnim){
             return;
         }
         this.set(this.x, this.y, state);
     }    
 
     nextFrame(){
-        const frame = this.animQueue.shift();
+        const frame = this.animQueue.shift();        
         if(frame){
             this.setState(frame.state, true);
             this.animTimeout = window.setTimeout(() => this.nextFrame(), frame.duration);
@@ -53,6 +54,7 @@ export class Character {
             this.startAnimation('idle');
         } else {
             this.stopAnimation();
+            this.animCompleteHandler && this.animCompleteHandler(this.currentAnimation);
         }
     }
 
@@ -71,11 +73,9 @@ export class Character {
             window.clearTimeout(this.animTimeout);
             this.animTimeout = false;
         }
+        delete this.currentAnimation;
         this.animating = false;
-        this.currentAnimation = '';
-        this.setState('default');
-        this.animCompleteHandler && this.animCompleteHandler();
-        this.animQueue = [];
+        this.animQueue = [];        
     }
 
     addAnimCompleteHandler(func){

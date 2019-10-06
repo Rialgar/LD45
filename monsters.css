@@ -3,7 +3,7 @@
     background-size: 800%;
 }
 
-#characters div.monster.slime.default {
+#characters div.monster.slime.standing {
     --tile-x: 0;
     --tile-y: 0;
 }
@@ -33,7 +33,7 @@
     --tile-y: 0;
 }
 
-#characters div.monster.knight.default {
+#characters div.monster.knight.standing {
     --tile-x: 6;
     --tile-y: 0;
 }
@@ -63,7 +63,7 @@
     --tile-y: 1;
 }
 
-#characters div.monster.king.default {
+#characters div.monster.king.standing {
     --tile-x: 4;
     --tile-y: 1;
 }

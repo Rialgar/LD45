@@ -33,7 +33,7 @@ const setData = (x, y, data) => {
 }
 
 const playerStates = [
-    'default',
+    'standing',
     'left',
     'right',
     'up',
@@ -54,10 +54,17 @@ const setPlayerState = (state) => {
         }
         state = playerStates.find(candidate => directionKeys[candidate] && directionKeys[candidate].find(key => isDown[key]));
     }
+    if(state && state !== 'default' && player.animating){
+        player.stopAnimation();
+    }
     player.setState(state);
 }
 
 const playerAnimations = {
+    idle: [
+        {state: 'standing', duration: 500},
+        {state: 'bounce', duration: 500}
+    ],
     headShake: [
         {state: 'left', duration: 100},
         {state: 'standing', duration: 100},
@@ -259,7 +266,11 @@ const init = () => {
 
     const charactersDiv = document.getElementById('characters');
     player = new Character(3, 3, playerAnimations, charactersDiv, ['player']);
-    player.addAnimCompleteHandler(setPlayerState);
+    player.addAnimCompleteHandler(name => {
+        if(name !== 'idle'){
+            setPlayerState();
+        }
+    });
     player.dom.addEventListener('transitionend', afterPlayerMove);
 
     const itemTypes = ['heart', 'coin', 'sword', 'shield'];
@@ -297,7 +308,7 @@ const makeLevel = () => {
                 if(special.item){
                     data.item = new Character(x, y, {}, charactersDiv, ['item'], special.item);
                 } else if(special.monster){
-                    data.monster = new Character(x, y, monsterAnims[special.monster], charactersDiv, ['monster', special.monster], 'deault');
+                    data.monster = new Character(x, y, monsterAnims[special.monster], charactersDiv, ['monster', special.monster], 'default');
                     data.monster.stats = {...monsterStats[special.monster]};
                 }
             }

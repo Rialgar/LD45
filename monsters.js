@@ -1,5 +1,5 @@
 const idle = [
-    {state: 'default', duration: 500},
+    {state: 'standing', duration: 500},
     {state: 'bounce', duration: 500}
 ];
 
