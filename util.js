@@ -18,3 +18,9 @@ export const leftPad = (string, length, char = '0') => {
     }
     return out;
 }
+
+export const flattenOnce = arr => {
+    const out = [];
+    arr.forEach(nested => out.push(...nested));
+    return out;
+}

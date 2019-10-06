@@ -1,15 +1,18 @@
-import { randomElement, shuffle, leftPad } from './util.js';
+import { randomElement, shuffle, leftPad, flattenOnce } from './util.js';
+import { monsterAnims } from './monsters.js';
 
 export const generate = (width, height) => {
 
     const groups = [];
     const rooms = [];
+    const flatRooms = [];
 
     const print = () => {
         let out = "";
         for(let y = 0; y < height; y++){
             for(let x = 0; x < width; x++){
-                out += leftPad(groups.indexOf(rooms[x][y].group), 2) + '|';
+                //out += leftPad(groups.indexOf(rooms[x][y].group), 2) + '|';
+                out += leftPad(rooms[x][y].distance, 2) + '|';
             }
             out += '\n';
         }
@@ -23,6 +26,16 @@ export const generate = (width, height) => {
         getRoom(x, y-1),
         getRoom(x, y+1)
     ].filter(room => !!room);
+
+    const getConnectedNeighbours = (room) => {
+        const {x, y} = room;
+        return [
+            room.connections.west ? getRoom(x-1, y) : null,
+            room.connections.east ? getRoom(x+1, y) : null,
+            room.connections.north ? getRoom(x, y-1) : null,
+            room.connections.south ? getRoom(x, y+1) : null
+        ].filter(room => !!room)
+    };
 
     const connectRooms = (roomA, roomB) => {
         if (roomA.x + 1 === roomB.x) { // B is east of A
@@ -57,6 +70,41 @@ export const generate = (width, height) => {
 
     }
 
+    const calculateDistances = () => {
+        flattenOnce(rooms).forEach(room => {
+            delete room.distance;
+        });
+        rooms.startRoom.distance = 0;
+        let furthestRoom = rooms.startRoom;
+        const roomsToProcess = [rooms.startRoom];
+        while(roomsToProcess.length > 0){
+            const room = roomsToProcess.pop();
+            if(room.distance > furthestRoom.distance){
+                furthestRoom = room;
+            }
+            const neighbours = getConnectedNeighbours(room).filter(n => typeof n.distance === 'undefined');
+            neighbours.forEach(n => n.distance = room.distance + 1);
+            roomsToProcess.push(...neighbours);
+        }
+        return furthestRoom;
+    }
+
+    const getCloserRooms = room => {
+        const out = [];
+        const roomsToProcess = getConnectedNeighbours(room).filter(n => n.distance < room.distance);
+        while(roomsToProcess.length > 0){
+            const next = roomsToProcess.pop();
+            out.push(next);
+            const neighbours = getConnectedNeighbours(next).filter(n => n !== room && out.indexOf(n) < 0);
+            roomsToProcess.push(...neighbours);
+        }
+        return out;
+    }
+
+    const isFree = room => !room.special
+    const freeRooms = (arr = flatRooms, condition = ()=>true ) => arr.filter(room => isFree(room) && condition(room));
+    const getFreeRoom = (arr = flatRooms, condition = ()=>true ) => randomElement(freeRooms(arr, condition));
+
     for(let x = 0; x < width; x++){
         rooms[x] = [];
         for(let y = 0; y < height; y++){
@@ -90,21 +138,69 @@ export const generate = (width, height) => {
         fuseGroups(group, otherGroup);
         groups.splice(groups.indexOf(otherGroup), 1);
     }
-    
-    //TODO this will probably cause many impossible levels
-    const specials = shuffle(['coin', 'coin', 'coin', 'coin', 'heart', 'sword', 'shield']).map(item => ({item}));
-    specials.push(...shuffle(['slime', 'knight', 'king']).map(monster => ({monster})));
-    specials.push('start');
 
-    while(specials.length){
-        let room = randomElement(randomElement(rooms));
-        while(room.special){
-            room = randomElement(randomElement(rooms));
-        }
-        room.special = specials.pop();
-        if(room.special === 'start'){
-            rooms.startRoom = room;
-        }
+    flatRooms.push(...flattenOnce(rooms));
+    
+    const shops = ['heart', 'shield', 'sword'].map(item => ({item}));
+    const coin = {item: 'coin'};
+    const monsters = ['slime', 'knight', 'king'].map(monster => ({monster}));    
+
+    let coinsLeft = 8;
+
+    let furthestRoom = {distance:0};
+    let attempt = -1;
+    while(furthestRoom.distance < 20 - attempt){
+        attempt++;
+        const startRoom = randomElement(randomElement(rooms));
+        rooms.startRoom = startRoom;
+
+        furthestRoom = calculateDistances();
+    }
+    rooms.startRoom.special = 'start';
+    furthestRoom.special = monsters.pop();    
+    
+    const knightRoom = getFreeRoom( undefined, room =>
+        room.distance > Math.max(6, furthestRoom.distance / 3) &&
+        room.distance < furthestRoom.distance - 3 &&
+        getConnectedNeighbours(room).length > 1
+    );
+    knightRoom.special = monsters.pop();
+    
+    const beforeKnight = getCloserRooms(knightRoom);
+    
+    const slimeRoom = getFreeRoom(beforeKnight, room =>
+        room.distance < knightRoom.distance - 2 &&
+        room.distance > 2 &&
+        getConnectedNeighbours(room).length > 1
+    );
+    slimeRoom.special = monsters.pop();
+
+    const beforeSlime = getCloserRooms(slimeRoom);
+    const behindKnight = flatRooms.filter(room => room != knightRoom && beforeKnight.indexOf(room) < 0);
+    const behindSlime = flatRooms.filter(room => room != slimeRoom && beforeSlime.indexOf(room) < 0);
+    const betweenSlimeAndKnight = behindSlime.filter(room => beforeKnight.indexOf(room) >= 0);
+    
+    getFreeRoom(beforeSlime).special = shops.pop();    
+    getFreeRoom(beforeSlime).special = {...coin};
+    coinsLeft--;
+
+    const randomShops = shuffle(shops);
+
+    getFreeRoom(betweenSlimeAndKnight).special = randomShops.pop();    
+    if(freeRooms(betweenSlimeAndKnight).length > 0){
+        getFreeRoom(betweenSlimeAndKnight).special = {...coin};
+        coinsLeft--;
+    }
+
+    getFreeRoom(behindKnight).special = randomShops.pop();
+    if(freeRooms(behindKnight).length > 0 ){
+        getFreeRoom(behindKnight).special = {...coin};
+        coinsLeft--;
+    }
+    
+    while(coinsLeft > 0){
+        getFreeRoom().special = {...coin};
+        coinsLeft--;
     }
 
     return rooms;
