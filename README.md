@@ -3,7 +3,7 @@ A simple Dungeon Crawler. The challenge lies in discovering the enemies stats. E
 
 Made in under 48 hours for the 45th Ludum Dare Game Making Competion (Compo).
 
-[![Screenshot of the Game](screenshots/Main.PNG)](https://rialgar.github.io/LD45/index.html)
+[![Screenshot of the Game](screenshots/Main.png)](https://rialgar.github.io/LD45/index.html)
 
 ### [Play here](https://rialgar.github.io/LD45/index.html)
 ### [Rate here](https://ldjam.com/events/ludum-dare/45/dungeon-crawler)
