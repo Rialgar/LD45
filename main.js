@@ -160,7 +160,6 @@ const afterPlayerMove = () => {
 
 const checkRoom = () =>{    
     const target = getTargetCell();
-    console.log('check room', target.data.monster.stats);
     if (!target) {
         player.startAnimation('headShake');
     } else if (!target.data.monster || target.data.monster.stats.hp + target.data.monster.stats.def <= items.swords || target.data.monster.stats.att <= items.shields){

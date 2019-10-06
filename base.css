@@ -1,3 +1,8 @@
+@font-face {
+    font-family: "04B03";
+    src: url("./04B_03__.TTF");
+}
+
 html, body {
     margin: 0;
     padding: 0;
@@ -48,6 +53,13 @@ body {
     left: calc(var(--tile-size) * 7);
     width: calc(var(--char-size) * 7);
     height: calc(var(--tile-size) * 7);
+}
+
+#instructions {
+    color: white;
+    font-family: "04B03", sans-serif;
+    font-size: 16px;
+    padding: 10px;
 }
 
 #table {
