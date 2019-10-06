@@ -1,0 +1,34 @@
+#characters div.monster {
+    background-image: url("Monsters.png");
+    background-size: 800%;
+}
+
+#characters div.monster.slime.default {
+    --tile-x: 0;
+    --tile-y: 0;
+}
+
+#characters div.monster.slime.bounce {
+    --tile-x: 1;
+    --tile-y: 0;
+}
+
+#characters div.monster.knight.default {
+    --tile-x: 6;
+    --tile-y: 0;
+}
+
+#characters div.monster.knight.bounce {
+    --tile-x: 7;
+    --tile-y: 0;
+}
+
+#characters div.monster.king.default {
+    --tile-x: 4;
+    --tile-y: 1;
+}
+
+#characters div.monster.king.bounce {
+    --tile-x: 5;
+    --tile-y: 1;
+}

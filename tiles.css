@@ -1,0 +1,88 @@
+#table td {
+    background-color: black;
+    background-image: url("Background.png");
+    background-repeat: no-repeat;
+    background-size: 400%;
+    width: var(--tile-size);
+    height: var(--tile-size);
+    margin: 0;
+    padding: 0;
+    --tile-x: 0;
+    --tile-y: 0;
+    background-position: calc(var(--tile-x) * var(--n-tile-size)) calc(var(--tile-y) * var(--n-tile-size));
+}
+
+#table td.w {
+    --tile-x: 1;
+    --tile-y: 0;
+}
+
+#table td.n {
+    --tile-x: 2;
+    --tile-y: 0;
+}
+
+#table td.e {
+    --tile-x: 3;
+    --tile-y: 0;
+}
+
+#table td.s {
+    --tile-x: 0;
+    --tile-y: 1;
+}
+
+#table td.e.w {
+    --tile-x: 1;
+    --tile-y: 1;
+}
+
+#table td.n.s {
+    --tile-x: 2;
+    --tile-y: 1;
+}
+
+#table td.w.s {
+    --tile-x: 3;
+    --tile-y: 1;
+}
+
+#table td.w.n {
+    --tile-x: 0;
+    --tile-y: 2;
+}
+
+#table td.e.n {
+    --tile-x: 1;
+    --tile-y: 2;
+}
+
+#table td.e.s {
+    --tile-x: 2;
+    --tile-y: 2;
+}
+
+#table td.w.n.s {
+    --tile-x: 3;
+    --tile-y: 2;
+}
+
+#table td.e.w.n {
+    --tile-x: 0;
+    --tile-y: 3;
+}
+
+#table td.e.n.s {
+    --tile-x: 1;
+    --tile-y: 3;
+}
+
+#table td.e.w.s {
+    --tile-x: 2;
+    --tile-y: 3;
+}
+
+#table td.e.w.n.s {
+    --tile-x: 3;
+    --tile-y: 3;
+}

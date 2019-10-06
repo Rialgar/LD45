@@ -1,15 +1,18 @@
 export class Character {
 
-    constructor(x, y, animations, domParent, clazz, state = 'default'){
+    constructor(x, y, animations, domParent, classes, state = 'default'){
         this.animations = animations;
         this.animating = false;
         this.animQueue = [];
 
-        this.clazz = clazz;
+        this.classes = classes;
         this.dom = document.createElement('div');
         domParent.appendChild(this.dom);
 
         this.set(x, y, state);
+        if(this.animations.idle){
+            this.startAnimation('idle');
+        }
     }
 
     destroy(){
@@ -27,7 +30,7 @@ export class Character {
 
         this.dom.className = '';
         this.dom.classList.add('character');
-        this.dom.classList.add(this.clazz);
+        this.dom.classList.add(... this.classes);
         this.dom.classList.add(state);
     }
 
@@ -43,6 +46,8 @@ export class Character {
         if(frame){
             this.setState(frame.state, true);
             this.animTimeout = window.setTimeout(() => this.nextFrame(), frame.duration);
+        } else if(this.currentAnimation === 'idle') {
+            this.startAnimation('idle');
         } else {
             this.stopAnimation();
         }
@@ -50,6 +55,7 @@ export class Character {
 
     startAnimation(name){
         this.animating = true;
+        this.currentAnimation = name;
         this.animQueue = [...this.animations[name] || []];
         this.nextFrame();
     }

@@ -1,0 +1,62 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    background-color: black;
+    image-rendering: pixelated;
+}
+
+body {
+    --tile-size: 96px;
+    --n-tile-size: calc(-1 * var(--tile-size));
+    --char-size: calc(var(--tile-size) / 2);
+    --n-char-size: calc(-1 * var(--char-size));
+}
+
+#game {
+    position: relative;
+}
+
+#characters {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(var(--tile-size) * 7);
+    height: calc(var(--tile-size) * 7);
+}
+
+#characters div.character {
+    --pos-x: 0;
+    --pos-y: 0;
+    position: absolute;
+    width: var(--char-size);
+    height: var(--char-size);
+    top: calc(( var(--pos-y) + 0.25 ) * var(--tile-size));
+    left: calc(( var(--pos-x) + 0.25 ) * var(--tile-size));
+
+    --tile-x: 0;
+    --tile-y: 0;
+    background-position: calc(var(--tile-x) * var(--n-char-size)) calc(var(--tile-y) * var(--n-char-size));
+    background-repeat: no-repeat;
+}
+
+#hud {
+    position: absolute;
+    top: 0;
+    left: calc(var(--tile-size) * 7);
+    width: calc(var(--char-size) * 7);
+    height: calc(var(--tile-size) * 7);
+}
+
+#table {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(var(--tile-size) * 7);
+    height: calc(var(--tile-size) * 7);
+
+    border-spacing: 0;
+    border-collapse: collapse;
+}

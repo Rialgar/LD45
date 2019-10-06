@@ -1,0 +1,76 @@
+
+#characters div.item {
+    background-image: url("Items.png");
+    background-size: 800%;
+    --tile-y: 1;
+}
+
+#characters div.item.heart {
+    --tile-x: 4;
+}
+
+#characters div.item.sword {
+    --tile-x: 5;
+}
+
+#characters div.item.shield {
+    --tile-x: 6;
+}
+
+#characters div.item.coin {
+    --tile-x: 7;
+}
+
+#hud div.hudItem {
+    display: inline-block;
+    width: var(--char-size);
+    height: var(--char-size);
+
+    background-image: url("Items.png");
+    background-size: 800%;
+
+    --tile-x: 0;
+    --tile-y: 0;
+    background-position: calc(var(--tile-x) * var(--n-char-size)) calc(var(--tile-y) * var(--n-char-size));
+    background-repeat: no-repeat;
+}
+
+#hud div.hudItem.heart {
+    --tile-x: 1;
+    --tile-y: 0;
+}
+
+#hud div.hudItem.heart.empty {
+    --tile-x: 0;
+    --tile-y: 0;
+}
+
+#hud div.hudItem.coin {
+    --tile-x: 3;
+    --tile-y: 0;
+}
+
+#hud div.hudItem.coin.empty {
+    --tile-x: 2;
+    --tile-y: 0;
+}
+
+#hud div.hudItem.sword {
+    --tile-x: 5;
+    --tile-y: 0;
+}
+
+#hud div.hudItem.sword.empty {
+    --tile-x: 4;
+    --tile-y: 0;
+}
+
+#hud div.hudItem.shield {
+    --tile-x: 7;
+    --tile-y: 0;
+}
+
+#hud div.hudItem.shield.empty {
+    --tile-x: 6;
+    --tile-y: 0;
+}

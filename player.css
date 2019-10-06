@@ -1,0 +1,23 @@
+#characters div.player {
+    z-index: 1;
+    background-image: url("Player.png");
+    background-size: 500%;
+    transition-property: top, left;
+    transition-duration: .1s;
+}
+
+#characters div.player.right {
+    --tile-x: 1;
+}
+
+#characters div.player.left {
+    --tile-x: 2;
+}
+
+#characters div.player.down {
+    --tile-x: 3;
+}
+
+#characters div.player.up {
+    --tile-x: 4;
+}

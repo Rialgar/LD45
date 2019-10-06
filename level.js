@@ -91,7 +91,9 @@ export const generate = (width, height) => {
         groups.splice(groups.indexOf(otherGroup), 1);
     }
     
+    //TODO this will probably cause many impossible levels
     const specials = shuffle(['coin', 'coin', 'coin', 'coin', 'heart', 'sword', 'shield']).map(item => ({item}));
+    specials.push(...shuffle(['slime', 'knight', 'king']).map(monster => ({monster})));
     specials.push('start');
 
     while(specials.length){

@@ -1,5 +1,6 @@
 import * as Level from './level.js'
 import { Character } from './character.js';
+import { monsterAnims } from './monsters.js';
 
 const width = 7;
 const height = 7;
@@ -207,7 +208,7 @@ const init = () => {
     }
 
     const charactersDiv = document.getElementById('characters');
-    player = new Character(3, 3, playerAnimations, charactersDiv, 'player');
+    player = new Character(3, 3, playerAnimations, charactersDiv, ['player']);
     player.addAnimCompleteHandler(setPlayerState);
     player.dom.addEventListener('transitionend', afterPlayerMove);
 
@@ -243,9 +244,10 @@ const makeLevel = () => {
             const data = level[x][y];
             if(data.special){
                 const special = data.special;
-                delete data.special;
                 if(special.item){
-                    data.item = new Character(x, y, [], charactersDiv, 'item', special.item);
+                    data.item = new Character(x, y, {}, charactersDiv, ['item'], special.item);
+                } else if(special.monster){
+                    data.monster = new Character(x, y, monsterAnims[special.monster], charactersDiv, ['monster', special.monster], 'deault');
                 }
             }
             setData(x, y, data);
