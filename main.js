@@ -166,8 +166,11 @@ const bindings = {
 }
 
 const isDown = {};
-const onkeydown = (ev) => {
+const onkeydown = (ev) => {    
     const key = ev.key.toLowerCase();
+    if(bindings.down[key]){
+        ev.preventDefault();
+    }
     if(isDown[key]){
         return;
     }
@@ -180,6 +183,9 @@ const onkeydown = (ev) => {
 
 const onkeyup = (ev) => {
     const key = ev.key.toLowerCase();
+    if(bindings.up[key]){
+        ev.preventDefault();
+    }
     if(!isDown[key]){
         return;
     }
